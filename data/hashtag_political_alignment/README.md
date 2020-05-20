@@ -15,8 +15,8 @@ Here is an example:
 Note that we remove the # and convert everything to lower-case.
 
 Tweets with only one hashtag are ignored.
-We provide an example of the hashtag sentence file: `hashtag_sentences.json.gz`.
-The content should have the following format:
+The file `hashtag_sentences.json.gz` contains an illustrative example of the input file used for training the hashtag embedding. The actual file is omitted to comply with Twitter API guidelines about resharing content. 
+The input file should have the following format:
 
 ```
 [
