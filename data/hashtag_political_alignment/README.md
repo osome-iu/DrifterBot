@@ -26,7 +26,7 @@ The input file should have the following format:
 ]
 ```
 
-To generate the embedding with 100 dimensions, run the following command in shell:
+To generate the embedding with 100 dimensions, run the following command in the unix shell:
 
 ```
 python hashtag_embedding.py hashtag_sentences.json.gz 100 hashtag_embedding.csv.gz
@@ -43,8 +43,7 @@ This can be achieved with the following command:
 python generate_hashtag_alignment.py hashtag_embedding.csv.gz 100 hashtag_alignment.csv.gz
 ```
 
-`hashtag_alignment.csv.gz` contains the alignment scores for the hashtags.
-The results need further calibration to ensure the center is corresponding to the neutral point in the political spectrum.
+where `hashtag_alignment.csv.gz` contains the alignment scores for the hashtags.
+The results need further calibration to ensure the center is corresponding to the neutral point in the political spectrum. This is explained in the paper and done by the `load_data()` function in the `exps/plot_helper.py` script.
 
-
-When using the code in other contexts, the anchor hashtags in the scripts need to be changed.
+When using the code in other contexts, the anchor hashtags in the script need to be changed.
