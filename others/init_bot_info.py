@@ -1,10 +1,10 @@
 """Used before an experiment starts. For insert the bot information."""
-import action
+from bot import action
 import json
 import psycopg2
-import source
+from bot import source
 from datetime import datetime
-from config_stat import *
+from bot.config_stat import *
 from bot import source
 import numpy as np
 
