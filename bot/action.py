@@ -2,7 +2,7 @@
 
 import cal_helper
 from config_stat import like_prob, follow_prob, unfollow_method, mention_tl_num
-from config_stat import mamximum_follow_ignore_ratio_bound, follow_ratio, minimum_friends
+from config_stat import mamximum_delta_between_friends_and_followers, minimum_friends
 from config_stat import num_tweets_in_each_topic, num_topics_in_trends
 from config_stat import num_friends_to_lookat_inFoF, tweet_prob
 from config_stat import num_latest_tweets_to_look_likes
@@ -259,10 +259,9 @@ class Follow(Action):
     num_friends = current_bot['friends_count']
     num_followers = current_bot['followers_count']
     self.twitter_id = current_bot['id']
-    if num_friends < mamximum_follow_ignore_ratio_bound:
+    if num_friends < mamximum_delta_between_friends_and_followers:
       return True
-    # if (num_friends / float(num_followers)) < follow_ratio:
-    if num_friends - num_followers <= mamximum_follow_ignore_ratio_bound:
+    if num_friends - num_followers <= mamximum_delta_between_friends_and_followers:
       return True
     return False
 
