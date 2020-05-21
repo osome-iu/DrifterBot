@@ -5,11 +5,10 @@ import psycopg2
 from bot import source
 from datetime import datetime
 from bot.config_stat import *
+from bot.config_stat import NUM_FRIENDS, NUM_FOLLOWERS
 from bot import source
 import numpy as np
 
-NUM_FRIENDS = 5
-NUM_FOLLOWERS = 5
 
 def buildParamJSON():
   result = {}
