@@ -1,4 +1,7 @@
-"""Used before an experiment starts. For insert the bot information."""
+"""This script should be used before an experiment starts to
+1. initialize the drifter Twitter profile (add initial friends).
+2. save the information of the bot in our database.
+"""
 from bot import action
 import json
 import psycopg2
