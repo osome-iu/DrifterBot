@@ -20,6 +20,7 @@ twitter_app_auth = {
 conn_save_freq = 12
 
 ##### Number of friends/followers when the drifter account is initialized along with the initial friends
+##### The parameters are used in others/init_bot_info.py
 NUM_FRIENDS = 1
 NUM_FOLLOWERS = 1
 
@@ -50,37 +51,46 @@ mention_tl_num = 1
 
 ## Like ##
 # In action Like, the probability distribution of its sources.
-
 like_prob = {
   'trend': 0.,
   'timeline': 0.,
   'like': 0.
 }
 ## Follow ##
-follow_ratio = 1
-mamximum_follow_ignore_ratio_bound = 1
+#### The maximum difference between friends and followers
+#### Once number of friends - number of followers > mamximum_delta_between_friends_and_followers
+#### the drifter cannot follow new accounts.
+mamximum_delta_between_friends_and_followers = 33
 # In action Follow, the probability distribution of its sources.
-
 follow_prob = {
   'FoF': 0., # friends of friends
   'timeline': 1.,
   'liked': 0.,
   'follower': 0.
 }
+## When FoF is selected as the source of following new accounts,
+## the drifter randomizes num_friends_to_lookat_inFoF friends and then look at their friends.
 num_friends_to_lookat_inFoF = 3
 
 ## Unfollow ##
 unfollow_method = 'weighted'  # weighted or uniform
+## If number of friends are less than minimum_friends, the drifter doesn't unfollow anyone.
+## Instead it follow one account.
 minimum_friends = 1
+
 ## Randomization ###
 # Randomization related to Trends
 num_topics_in_trends = 1
 num_tweets_in_each_topic = 1
-# Randomization related to Likes
+
+## It's used in the source Tweets Liked by Friends.
+## A drifter selects num_latest_tweets_to_look_likes friends
+## that have Tweets shown in the drifter's home timeline, and then
+## look at the Tweets liked by these friends.
 num_latest_tweets_to_look_likes = 1
 
 ## Tweet ##
-
+### The source probabilities used in Tweet action
 tweet_prob = {
   'timeline':0.,
   'trend':0.,
