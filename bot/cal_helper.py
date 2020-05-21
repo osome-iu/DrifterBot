@@ -2,7 +2,7 @@
 import json
 import numpy as np
 import random
-import vocalburary as tweet_vocal
+import vocabulary as tweet_vocal
 
 
 def RandomizeAnTweetFromFile():
