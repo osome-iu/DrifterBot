@@ -6,7 +6,7 @@ Social media platforms attempting to curb abuse and misinformation have been acc
 
 ## Repo Structure
 
-+ **`bot`** contains the source code of the drifters. Use `python bot/drifter_main.py <your drifter screen_name>` to activate the drifters.
++ **`bot`** contains the source code of the drifters. Use `cd bot; python drifter_main.py <your drifter screen_name>` to activate the drifters.
 + **`data`** contains the code and intermediate data files for the analyses.
   + `data/hashtag_political_alignment` has the implementation of hashtag embedding.
   + [`data/GenerateDataFiles.ipynb`](/data/GenerateDataFiles.ipynb) generates data files for our analyses.
