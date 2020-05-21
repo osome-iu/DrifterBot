@@ -1,7 +1,7 @@
 """clean up an account after an experiment.
 
 Using command line 
-python account_cleanup.py <DRIFTER_SCREEN_NAME>
+python others/account_cleanup.py <DRIFTER_SCREEN_NAME>
 
 Delete:
   1. friend list
@@ -11,8 +11,8 @@ Delete:
 
 """
 
-import source
-from action import Action
+from bot import source
+from bot.action import Action
 import sys
 
 
