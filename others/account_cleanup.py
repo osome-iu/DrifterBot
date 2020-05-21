@@ -1,5 +1,8 @@
 """clean up an account after an experiment.
 
+Using command line 
+python account_cleanup.py <DRIFTER_SCREEN_NAME>
+
 Delete:
   1. friend list
   2. follower list  ## block and then unblock them
