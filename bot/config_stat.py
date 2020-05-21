@@ -16,9 +16,14 @@ twitter_app_auth = {
   'access_token_secret': access_token_secret
 }
 
+##### The frequency (hour) to save hometimeline, friends and followers for drifters into the database
 conn_save_freq = 12
-##### Probability of each action for bot #####
 
+##### Number of friends/followers when the drifter account is initialized along with the initial friends
+NUM_FRIENDS = 1
+NUM_FOLLOWERS = 1
+
+##### Probability of each action for bot #####
 prob_event = {
   'like': 1.0,
   'retweet': 0.,
@@ -27,9 +32,11 @@ prob_event = {
   'tweet': 0.,
   'replymention':0.
 }
-activation_time = (12, 13)  # during the time, the bot can be activated
 
-
+# Defines the time window that drifers can be active each day.
+# The first number is the start hour, and the second number is the end hour.
+# E.g., (7,13) means drifters can be activated from 7am to 1pm.
+activation_time = (7, 13)
 
 ##### Source Configuration #####
 num_timeline_tweets = 1
