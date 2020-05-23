@@ -1,7 +1,6 @@
 from config_stat import twitter_app_auth  # config file
 
 from metric.const_config import NUM_FRIENDS_TO_SAVE, NUM_FOLLOWERS_TO_SAVE 
-from metric.const_config import VALID_DATES_CONN
 from metric.db_for_analysis import SaveTweetstoDB, GetAllConns,UpdateConn
 from metric.db_for_analysis import GetTweetsWithoutLowCredScore, UpdateLowCredScore
 from metric.db_for_analysis import GetTweetsWithoutHashtagScore, GetTweetsWithoutURLScore
