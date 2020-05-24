@@ -5,24 +5,26 @@ import numpy as np
 import pandas as pd
 import os
 
-# INIT_SEEDS = [
-#   'USATODAY',
-#   'thenation',
-#   'washingtonpost',
-#   'WSJ',
-#   'BreitbartNews',
-# ]  # get their twitter user ids later.
+INIT_SEEDS = [
+  'USATODAY',
+  'thenation',
+  'washingtonpost',
+  'WSJ',
+  'BreitbartNews',
+]  # get their twitter user ids later.
 
-# # A map from the seed to a list of bots that are in this group
-# # (masks the bot screen names that we used)
-# INIT_SEED_MAP = {
-#   'thenation': [],
-#   'washingtonpost': [],
-#   'USATODAY': [],
-#   'WSJ': [],
-#   'BreitbartNews': []
-# }
+INIT_SEED_MAP = {
+  'thenation': [<'drifter_scren_name'>,...],
+  'washingtonpost': [],
+  'USATODAY': [],
+  'WSJ': [],
+  'BreitbartNews': []
+}
 
+
+BOT_NAME_MASK = {
+  '<you_drifter_screen_name>':'bot<id>', 
+}
 
 
 HASHTAG_USER_TL_SLIDING_WIN_FOR_EACH_BOT = """
@@ -32,8 +34,6 @@ SELECT
          over (order by tw_score.day ROWS BETWEEN 20 PRECEDING AND CURRENT ROW) AS hashtag_mean,
        VARIANCE(tw_score.hashtag_score)
          over (order by tw_score.day ROWS BETWEEN 20 PRECEDING AND CURRENT ROW) AS hashtag_var,
-       count(tw_score.hashtag_score) 
-         over (order by tw_score.day ROWS BETWEEN 20 PRECEDING AND CURRENT ROW) AS hashtag_tw_count,
        count(*)
          over (order by tw_score.day ROWS BETWEEN 20 PRECEDING AND CURRENT ROW) AS tw_count
    FROM
@@ -62,8 +62,6 @@ SELECT
          over (order by tw_score.day ROWS BETWEEN 20 PRECEDING AND CURRENT ROW) AS url_mean,
        VARIANCE(tw_score.url_score)
          over (order by tw_score.day ROWS BETWEEN 20 PRECEDING AND CURRENT ROW) AS url_var,
-       count(tw_score.url_score) 
-         over (order by tw_score.day ROWS BETWEEN 20 PRECEDING AND CURRENT ROW) AS url_tw_count,
        count(*)
          over (order by tw_score.day ROWS BETWEEN 20 PRECEDING AND CURRENT ROW) AS tw_count
    FROM
@@ -92,8 +90,6 @@ SELECT
          over (order by tw_score.day ROWS BETWEEN 50 PRECEDING AND CURRENT ROW) AS hashtag_mean,
        VARIANCE(tw_score.hashtag_score)
          over (order by tw_score.day ROWS BETWEEN 50 PRECEDING AND CURRENT ROW) AS hashtag_var,
-       count(tw_score.hashtag_score) 
-         over (order by tw_score.day ROWS BETWEEN 50 PRECEDING AND CURRENT ROW) AS hashtag_tw_count,
        count(*)
          over (order by tw_score.day ROWS BETWEEN 50 PRECEDING AND CURRENT ROW) AS tw_count
    FROM
@@ -122,8 +118,6 @@ SELECT
          over (order by tw_score.day ROWS BETWEEN 50 PRECEDING AND CURRENT ROW) AS url_mean,
        VARIANCE(tw_score.url_score)
          over (order by tw_score.day ROWS BETWEEN 50 PRECEDING AND CURRENT ROW) AS url_var,
-       count(tw_score.url_score) 
-         over (order by tw_score.day ROWS BETWEEN 50 PRECEDING AND CURRENT ROW) AS url_tw_count,
        count(*)
          over (order by tw_score.day ROWS BETWEEN 50 PRECEDING AND CURRENT ROW) AS tw_count
    FROM
@@ -250,13 +244,13 @@ def GetTimeSerisMetricForOneSeed(seeds, feature, comm, column_names, filename_pr
     return False
   rst_bot_to_df = {}
   for seed in seeds:
-    print(feature,bots_mask.get(seed,seed),filename_prefix)
+    print(feature,bots_mask.get(seed, seed),filename_prefix)
     result = DBExecute(
       db_conn, comm.format(seed), need_commit=False,
       return_id=False)
     result_df = pd.DataFrame(np.array(result), columns=column_names)
     result_df = result_df.drop_duplicates(subset={'date'}, keep='last')
-    result_df.to_csv('../data/time_series/%s_%s.csv' % (filename_prefix, bots_mask.get(seed,seed)), index=False)
+    result_df.to_csv('data/time_series/%s_%s.csv' % (filename_prefix, bots_mask.get(seed,seed)), index=False)
     rst_bot_to_df[seed] = result_df
 
 
@@ -264,22 +258,24 @@ def generate_all_time_series(db_conn=None, INIT_SEED_MAP={}, bots_mask={}):
     if not db_conn:
       db_conn = psycopg2.connect('dbname=drifter')
   
-    for seed,bot_accounts in INIT_SEED_MAP.items():
+    for seed, bot_accounts in INIT_SEED_MAP.items():
+      print(seed)
       # get bots in seed group
 #       bot_accounts = INIT_SEED_MAP[seed]
       # url
 
       GetTimeSerisMetricForOneSeed(
         bot_accounts, 'url', URL_HOME_TL_SLIDING_WIN_FOR_EACH_BOT,
-        ['date', 'url_mean', 'url_var', 'url_count','num_tw'],
+        ['date', 'url_mean', 'url_var', 'url_count'],
         'url_%s_sliced_home_tl' % seed, 'URL-based Home Timeline Score for Bots in %s' % seed, 
           db_conn=db_conn,
           bots_mask = bots_mask
       )
 
+
       GetTimeSerisMetricForOneSeed(
         bot_accounts, 'url', URL_USER_TL_SLIDING_WIN_FOR_EACH_BOT,
-        ['date', 'url_mean', 'url_var', 'url_count','num_tw'],
+        ['date', 'url_mean', 'url_var', 'url_count'],
         'url_%s_sliced_usr_tl' % seed, 'URL-based User Timeline Score for Bots in %s' % seed, 
           db_conn=db_conn,
           bots_mask = bots_mask
@@ -297,7 +293,7 @@ def generate_all_time_series(db_conn=None, INIT_SEED_MAP={}, bots_mask={}):
 
       GetTimeSerisMetricForOneSeed(
         bot_accounts, 'hashtag', HASHTAG_HOME_TL_SLIDING_WIN_FOR_EACH_BOT,
-        ['date', 'hashtag_mean', 'hashtag_var', 'hashtag_count','num_tw'],
+        ['date', 'hashtag_mean', 'hashtag_var', 'hashtag_count'],
         'hashtag_%s_sliced_home_tl' % seed, 'Hashtag-based Home Timeline Score for Bots in %s' % seed, 
           db_conn=db_conn,
           bots_mask = bots_mask
@@ -305,7 +301,7 @@ def generate_all_time_series(db_conn=None, INIT_SEED_MAP={}, bots_mask={}):
 
       GetTimeSerisMetricForOneSeed(
         bot_accounts, 'hashtag', HASHTAG_USER_TL_SLIDING_WIN_FOR_EACH_BOT,
-        ['date', 'hashtag_mean', 'hashtag_var', 'hashtag_count','num_tw'],
+        ['date', 'hashtag_mean', 'hashtag_var', 'hashtag_count'],
         'hashtag_%s_sliced_usr_tl' % seed, 'Hashtag-based User Timeline Score for Bots in %s' % seed, 
           db_conn=db_conn,
           bots_mask = bots_mask
@@ -321,11 +317,11 @@ def generate_all_time_series(db_conn=None, INIT_SEED_MAP={}, bots_mask={}):
 
     if db_conn:
       db_conn.close()
-
+    
             
             
 def main():
-    generate_all_time_series()
+    generate_all_time_series(None, INIT_SEED_MAP, BOT_NAME_MASK)
 
 if __name__ == "__main__":
     main()
