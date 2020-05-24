@@ -239,7 +239,7 @@ def DBExecute(
   return result
 
 
-def GetTimeSerisMetricForOneSeed(seeds, feature, comm, column_names, filename_prefix, plt_title, bots_mask, db_conn=None):
+def GetTimeSerisMetricForOneSeed(seeds, feature, comm, column_names, filename_prefix, bots_mask, db_conn=None):
   if not db_conn:
     return False
   rst_bot_to_df = {}
@@ -267,26 +267,26 @@ def generate_all_time_series(db_conn=None, INIT_SEED_MAP={}, bots_mask={}):
       GetTimeSerisMetricForOneSeed(
         bot_accounts, 'url', URL_HOME_TL_SLIDING_WIN_FOR_EACH_BOT,
         ['date', 'url_mean', 'url_var', 'url_count'],
-        'url_%s_sliced_home_tl' % seed, 'URL-based Home Timeline Score for Bots in %s' % seed, 
+        'url_%s_sliced_home_tl' % seed, 
           db_conn=db_conn,
-          bots_mask = bots_mask
+          bots_mask=bots_mask
       )
 
 
       GetTimeSerisMetricForOneSeed(
         bot_accounts, 'url', URL_USER_TL_SLIDING_WIN_FOR_EACH_BOT,
         ['date', 'url_mean', 'url_var', 'url_count'],
-        'url_%s_sliced_usr_tl' % seed, 'URL-based User Timeline Score for Bots in %s' % seed, 
+        'url_%s_sliced_usr_tl' % seed,
           db_conn=db_conn,
-          bots_mask = bots_mask
+          bots_mask=bots_mask
       )
     
       GetTimeSerisMetricForOneSeed(
         bot_accounts, 'url', URL_FRIEND_USR_TIMELINE,
         ['date', 'url_mean', 'url_var','url_count'],
-        'url_%s_sliced_friend_usr_tl' % seed, 'URL-based Friends\'User Timeline Score for Bots in %s' % seed, 
+        'url_%s_sliced_friend_usr_tl' % seed,
           db_conn=db_conn,
-          bots_mask = bots_mask
+          bots_mask=bots_mask
       )
 
       # hashtag
@@ -294,25 +294,25 @@ def generate_all_time_series(db_conn=None, INIT_SEED_MAP={}, bots_mask={}):
       GetTimeSerisMetricForOneSeed(
         bot_accounts, 'hashtag', HASHTAG_HOME_TL_SLIDING_WIN_FOR_EACH_BOT,
         ['date', 'hashtag_mean', 'hashtag_var', 'hashtag_count'],
-        'hashtag_%s_sliced_home_tl' % seed, 'Hashtag-based Home Timeline Score for Bots in %s' % seed, 
+        'hashtag_%s_sliced_home_tl' % seed,
           db_conn=db_conn,
-          bots_mask = bots_mask
+          bots_mask=bots_mask
       )
 
       GetTimeSerisMetricForOneSeed(
         bot_accounts, 'hashtag', HASHTAG_USER_TL_SLIDING_WIN_FOR_EACH_BOT,
         ['date', 'hashtag_mean', 'hashtag_var', 'hashtag_count'],
-        'hashtag_%s_sliced_usr_tl' % seed, 'Hashtag-based User Timeline Score for Bots in %s' % seed, 
+        'hashtag_%s_sliced_usr_tl' % seed,
           db_conn=db_conn,
-          bots_mask = bots_mask
+          bots_mask=bots_mask
       )
 
       GetTimeSerisMetricForOneSeed(
         bot_accounts, 'hashtag', HASHTAG_FRIEND_USR_TIMELINE,
         ['date', 'hashtag_mean', 'hashtag_var', 'hashtag_count'],
-        'hashtag_%s_sliced_friend_usr_tl' % seed, 'Hashtag-based Friends\'User Timeline Score for Bots in %s' % seed, 
+        'hashtag_%s_sliced_friend_usr_tl' % seed,
           db_conn=db_conn,
-          bots_mask = bots_mask
+          bots_mask=bots_mask
       )
 
     if db_conn:
