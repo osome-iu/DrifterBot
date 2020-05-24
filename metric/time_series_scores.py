@@ -151,7 +151,6 @@ SELECT
    FROM (
        SELECT
            DISTINCT usr_timeline.tweet_id,
-           usr_timeline.created_at,
            conn2.t_usr_id_conn,
            usr_timeline.url_score,
            date_trunc('day', conn2.time) AS day
@@ -168,7 +167,6 @@ SELECT
        WHERE
            usr_timeline.user_id = conn2.t_usr_id_conn
            AND usr_timeline.url_score is not null
-       ORDER BY usr_timeline.created_at DESC
    ) AS friend_tw_scores
 order by friend_tw_scores.day;
 """
@@ -186,7 +184,6 @@ SELECT
    FROM (
        SELECT
            DISTINCT usr_timeline.tweet_id,
-           usr_timeline.created_at,
            conn2.t_usr_id_conn,
            usr_timeline.hashtag_score,
            date_trunc('day', conn2.time) AS day
@@ -203,7 +200,6 @@ SELECT
        WHERE
            usr_timeline.user_id = conn2.t_usr_id_conn
            AND usr_timeline.hashtag_score is not null
-       ORDER BY usr_timeline.created_at DESC
    ) AS friend_tw_scores
 order by friend_tw_scores.day;
 """
