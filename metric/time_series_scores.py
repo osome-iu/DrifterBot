@@ -167,6 +167,7 @@ SELECT
        WHERE
            usr_timeline.user_id = conn2.t_usr_id_conn
            AND usr_timeline.url_score is not null
+       ORDER BY usr_timeline.created_at DESC
    ) AS friend_tw_scores
 order by friend_tw_scores.day;
 """
@@ -200,6 +201,7 @@ SELECT
        WHERE
            usr_timeline.user_id = conn2.t_usr_id_conn
            AND usr_timeline.hashtag_score is not null
+       ORDER BY usr_timeline.created_at DESC
    ) AS friend_tw_scores
 order by friend_tw_scores.day;
 """
