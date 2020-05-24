@@ -151,6 +151,7 @@ SELECT
    FROM (
        SELECT
            DISTINCT usr_timeline.tweet_id,
+           usr_timeline.created_at,
            conn2.t_usr_id_conn,
            usr_timeline.url_score,
            date_trunc('day', conn2.time) AS day
@@ -185,6 +186,7 @@ SELECT
    FROM (
        SELECT
            DISTINCT usr_timeline.tweet_id,
+           usr_timeline.created_at,
            conn2.t_usr_id_conn,
            usr_timeline.hashtag_score,
            date_trunc('day', conn2.time) AS day
