@@ -1,7 +1,6 @@
 from config_stat import twitter_app_auth  # config file
 
 from metric.const_config import NUM_FRIENDS_TO_SAVE, NUM_FOLLOWERS_TO_SAVE 
-from metric.const_config import VALID_DATES_CONN
 from metric.db_for_analysis import SaveTweetstoDB, GetAllConns,UpdateConn
 from metric.db_for_analysis import GetTweetsWithoutLowCredScore, UpdateLowCredScore
 from metric.db_for_analysis import GetTweetsWithoutHashtagScore, GetTweetsWithoutURLScore
@@ -35,7 +34,6 @@ class Analyzer(object):
       twitter_app_auth['access_token_secret'])
     self.tweepy_api = tweepy.API(self.auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
-  
   def calc_url_low_cred_score(self, url):
     """Method to compute the low credibility score of a link. Returns 1 if the link if classified as low credidibility for
     any source in the low_credibility_df, and 0 otherwise. The method also uses an additional source of known shorterners 
