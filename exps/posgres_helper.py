@@ -2,8 +2,11 @@ import psycopg2 as psql
 import pandas as pd
 
 def loadPubKey(path='<key>'):
-    with open(path) as key:
-        return key.read().strip()
+    try:
+        with open(path) as key:
+            return key.read().strip()
+    except:
+        return None
 
 def getDataframeFromQuery(conn=None, sql=""):
     try:
