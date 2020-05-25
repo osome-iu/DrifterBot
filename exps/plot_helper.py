@@ -357,24 +357,34 @@ def compute_sum_plot(df, sel_cols):
     pooled_sde = pooled_sde[mask]
     return x_axis_val, pooled_sde, tmp_date
 
-def plot_vertical_scores_summary(home_tl_df, friends_df, bias_df,middle_line_x=0,figsize=(7,4),
-                                home_tl_xlim=1, friends_xlim=1, bias_xlim=1,filename="to_delete.pdf"):
-    fig, axs = plt.subplots(1,3,figsize=figsize,sharey=True,sharex=False)
+def plot_vertical_scores_summary(
+    home_tl_df, friends_df, bias_df,
+    home_tl_df2, friends_df2, bias_df2,
+    middle_line_x=0,figsize=(7,4),
+    home_tl_xlim=1, friends_xlim=1, bias_xlim=1,
+    home_tl_xlim2=1, friends_xlim2=1, bias_xlim2=1,
+    filename="to_delete.pdf",
+    label_letters=["A","B","C","D","E","F"]
+):
+    fig, axs = plt.subplots(2,3,figsize=figsize,sharey=True,sharex=False)
+    axs = axs.flatten()
     y_values = home_tl_df.index
     handles=[]
     labels=[]
     for (df,summary_xlim), (ax,pos) in zip(
         zip(
             [
-                home_tl_df, friends_df, bias_df
+                home_tl_df, friends_df, bias_df,
+                home_tl_df2, friends_df2, bias_df2
             ], 
             [
-                home_tl_xlim, friends_xlim, bias_xlim
+                home_tl_xlim, friends_xlim, bias_xlim,
+                home_tl_xlim2, friends_xlim2, bias_xlim2
             ]
         ), 
         zip(
             axs,
-            ["A","B","C"]
+            label_letters
         )
     ):
         for seed, title in INIT_SEED_RENAME.items():
@@ -401,18 +411,18 @@ def plot_vertical_scores_summary(home_tl_df, friends_df, bias_df,middle_line_x=0
             )
     axs[0].yaxis.set_major_locator(dates.MonthLocator())
     axs[0].yaxis.set_major_formatter(dates.DateFormatter('%b-%Y'))
-    lgnd= plt.legend(
-        loc=(1.02,.3),
+    lgnd= axs[2].legend(
+        loc=(1.02,.0),
         frameon=False,
         fontsize=16,
     )
-    for i in range(3):
+    for i in range(6):
         axs[i].set_xticks([-.5,0,.5])
         axs[i].set_xticklabels([-.5,0,.5])
     
-    axs[0].set_xlabel(r"$s_h$")
-    axs[1].set_xlabel(r"$s_u$")
-    axs[2].set_xlabel(r"$s_h-s_f$");
+    axs[3].set_xlabel(r"$s_h$")
+    axs[4].set_xlabel(r"$s_u$")
+    axs[5].set_xlabel(r"$s_h-s_f$");
     plt.tight_layout()
     plt.savefig(filename, bbox_extra_artists=(lgnd,), bbox_inches='tight')
     return axs
