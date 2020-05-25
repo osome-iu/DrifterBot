@@ -35,7 +35,7 @@ class Analyzer(object):
     if_stop=False
     first_tweet_id = None
     last_tweet_id = None
-    last_time = '2019-06-01'
+    last_time = '2010-01-01'
     low_credibility_df = pd.read_csv("../data/fake_source_list.csv").drop_duplicates()
     while True:
       if if_stop:
@@ -77,7 +77,7 @@ class Analyzer(object):
     if_stop_signal = 0
     first_tweet_id = None
     last_tweet_id = None
-    last_time = '2019-06-01'
+    last_time = '2010-01-01'
     while True:
       if if_stop_signal == 1:
         break
@@ -109,7 +109,7 @@ class Analyzer(object):
     if_stop=False
     first_tweet_id = None
     last_tweet_id = None
-    last_time = '2019-06-01'
+    last_time = '2010-01-01'
     while True:
       if if_stop:
         break
