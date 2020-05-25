@@ -1,6 +1,7 @@
 from config_stat import twitter_app_auth  # config file
 
 from metric.const_config import NUM_FRIENDS_TO_SAVE, NUM_FOLLOWERS_TO_SAVE 
+from metric.const_config import VALID_DATES_CONN
 from metric.db_for_analysis import SaveTweetstoDB, GetAllConns,UpdateConn
 from metric.db_for_analysis import GetTweetsWithoutLowCredScore, UpdateLowCredScore
 from metric.db_for_analysis import GetTweetsWithoutHashtagScore, GetTweetsWithoutURLScore
@@ -11,6 +12,7 @@ import random
 import networkx as nx
 import pandas as pd
 import time
+import tldextract
 from tweepy.error import TweepError
 
 class Analyzer(object):
@@ -18,6 +20,9 @@ class Analyzer(object):
   def __init__(self, init_tweepy=False):
     self.tweepy_api = None
     self.auth = None
+    self.low_credibility_df = pd.read_csv("../data/fake_source_list.csv").drop_duplicates()
+    self.low_credibility_df.site = low_credibility_df.site.str.lower()
+    self.known_shorterners = pd.read_csv("../data/known_shorterners.csv",index_col=0).domain.to_dict()
     if init_tweepy:
       self._initTweepy()
 
@@ -30,13 +35,26 @@ class Analyzer(object):
       twitter_app_auth['access_token_secret'])
     self.tweepy_api = tweepy.API(self.auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
+  
+  def calc_url_low_cred_score(self, url):
+    """Method to compute the low credibility score of a link. Returns 1 if the link if classified as low credidibility for
+    any source in the low_credibility_df, and 0 otherwise. The method also uses an additional source of known shorterners 
+    to translate domains before looking up for low credibility reference.
+    """
+    pre,dom,suf = tldextract.extract(url.lower())
+    domain = "{}{}.{}".format(
+        "" if (pre=="") or (pre=="www") else pre+".",
+        dom,
+        suf
+    )
+    return sum(self.low_credibility_df.site==self.known_shorterners.get(domain,domain))
+
   def ComputeLowCredTweetScore(self, num_limit=3000):
-    """Compute url scores for tweets that haven't had url scores in our db."""
+    """Compute low credibility scores for tweets with resolved URLs that haven't had been computed in our db."""
     if_stop=False
     first_tweet_id = None
     last_tweet_id = None
     last_time = '2019-06-01'
-    low_credibility_df = pd.read_csv("../data/fake_source_list.csv").drop_duplicates()
     while True:
       if if_stop:
         break
@@ -45,13 +63,15 @@ class Analyzer(object):
       print('len of tweets %s' % len(tweet_url_list))
       print(timestamp)
       if tweet_url_list and len(tweet_url_list) > 0:
-        tweet_url_df = pd.DataFrame(tweet_url_list, columns=['tweet_id', 'urls'])
-        print(tweet_url_df)
-        tweet_url_df['low_cred_score'] = tweet_url_df['urls'].apply(
-          process_low_cred_urls,
-          low_credibility_df=low_credibility_df)
-        tweet_url_df.dropna(subset=['low_cred_score'], inplace=True)
-        tweet_url_df.apply(UpdateLowCredScore, axis=1)
+        tw_examples = pd.DataFrame(tweet_url_list, columns=['tweet_id', 'resolved_urls'])
+        tw_examples.resolved_urls = tw_examples.resolved_urls.str.lower()
+
+        tw_examples["low_cred_score"] = tw_examples.resolved_urls.apply(self.calc_url_low_cred_score)
+        tw_examples = tw_examples.groupby("tweet_id").agg({
+            "low_cred_score": "max"
+        })
+                
+        tw_examples.apply(UpdateLowCredScore, axis=1)
       else:
         break
       if len(tweet_url_list) < num_limit:

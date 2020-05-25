@@ -76,10 +76,22 @@ def GetTweetsWithoutURLScore(num_limit=100, timestamp='2019-01-01'):
 
 def GetTweetsWithoutLowCredScore(num_limit=100, timestamp='2019-01-01'):
   comm = """
-    select tweet_id, resolved_urls, created_at from tweet
-    where low_cred_score is null and created_at >= timestamp '%s'
-          and resolved_urls is not null limit %s;
+    select * from (
+        SELECT
+        tweet_id,
+        unnest(resolved_urls) as resolved_urls,
+        created_at
+        from tweet 
+        WHERE
+        cardinality(resolved_urls)>0
+        and low_cred_score is null 
+        and created_at >= timestamp '%s'
+        limit %s
+    ) as t
+    where 
+    t.resolved_urls !~ \'twitter.com/\'
     """ % (timestamp, num_limit)
+
   db_conn = psycopg2.connect('dbname=drifter')
   rst = DBExecute(
             db_conn, comm, "get tweet_id without low-credibility score",
