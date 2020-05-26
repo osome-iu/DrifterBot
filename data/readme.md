@@ -16,7 +16,7 @@ To run the [GenerateDataFiles.ipynb notebook](GenerateDataFiles.ipynb) you need 
 
 + ### Bot scores
 
-The bot score retrieval is outside the scope of this project, so before generating the data for the plots, you need to provide the bot scores for the friends and followers of each seed and drifter. In this project, we gathered data from [Botometer](https://botometer.iuni.iu.edu/) using the API. The input file for our analysis is [connections_botscores.csv](connections_botscores.csv).
+In this project, we gathered data from [Botometer](https://botometer.iuni.iu.edu/) using the API. The input file for our analysis is [connections_botscores.csv](connections_botscores.csv). The base code to generate this file can be found in the [retrieving_botscore.ipynb](retrieving_botscore.ipynb) notebook.
 
 + ### Ego Networks
 
