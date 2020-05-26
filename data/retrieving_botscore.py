@@ -6,7 +6,6 @@ import numpy as np
 from datetime import datetime as dt
 import botometer
 import json
-import matplotlib.pyplot as plt
 
 class RotatingFileOpener():
     def __init__(self, path, mode='a+', prepend="", append=""):
