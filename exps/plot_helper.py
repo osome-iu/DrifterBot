@@ -5,6 +5,7 @@ from datetime import datetime as dt
 import matplotlib.pyplot as plt
 from matplotlib import dates
 import json
+from datetime import timedelta
 
 ### CONSTANTS
 
@@ -79,15 +80,16 @@ BOT_SEED_MAP = {
 }
 
 SEED_URL_SCORE = {
-  'USATODAY':-0.0635,
-  'thenation':-0.9463,
-  'washingtonpost':-0.2568,
-  'WSJ':0.2754,
-  'BreitbartNews':0.9136
+  'USATODAY':0.0582,
+  'thenation':-0.7298,
+  'washingtonpost':-0.2342,
+  'WSJ':0.0106,
+  'BreitbartNews':0.7419
 }
 
 USATODAY_HASHTAG_SCORE = -0.2456
 
+bot_end_date = {'bot13': '2019-11-10', 'bot14': '2019-11-14'}
 
 def plot_bots_and_summary(
     bots_df, 
@@ -241,72 +243,114 @@ def plotTwoBarsPlot(bars1, yer1, colors, xticks, bars2=None, yer2=None, figname=
     return ax
     
 
-def load_data(medium, loc, center_score=-0.0635, basepath=""):
+def load_data(medium, loc, center_score=-0.0635, basepath="",
+    end_date='2019-12-01', early_end_bot_idx=[13, 14]):
     """ Method used to load CSV files and combine them into a single dataframe to plot timeline drifts.
     """
     df = pd.DataFrame(None, columns=['date'])
     df = df.set_index('date')
     for bot, seed in BOT_SEED_MAP.items():
-        filename = basepath + f'{medium}_{seed}_sliced_{loc}_tl_{bot}.csv'
-        tmp_df = pd.read_csv(f'{filename}',
-                             usecols=['date', f'{medium}_mean', f'{medium}_var', f'{medium}_count'],
+        filename = basepath + '%s_%s_sliced_%s_tl_%s.csv' % (medium, seed, loc, bot)
+        tmp_df = pd.read_csv(filename,
+                             usecols=['date', '%s_mean' % medium, '%s_var' % medium, '%s_count' % medium],
 #                              parse_dates=['date'],
 #                              date_parser=lambda x: pd.datetime.strptime(x, "%Y-%m-%d %H:%M:%S")
                             )
         tmp_df["date"] = pd.to_datetime(tmp_df["date"])
-        tmp_df[f'{bot}_sem'] = np.sqrt(tmp_df[f'{medium}_var'].astype('float').divide(tmp_df[f'{medium}_count'].astype('float')))
+        tmp_df['%s_sem' % bot] = np.sqrt(tmp_df['%s_var' % medium].astype('float').divide(tmp_df['%s_count' % medium].astype('float')))
         tmp_df = tmp_df.rename(columns={
-            f'{medium}_mean': bot,
-            f'{medium}_var': f'{bot}_var',
-            f'{medium}_count': f'{bot}_count'})
+            '%s_mean' % medium: bot,
+            '%s_var' % medium: '%s_var' % bot,
+            '%s_count' % medium: '%s_count' % bot})
         tmp_df = tmp_df.drop_duplicates(subset={'date'}, keep='last')
         tmp_df = tmp_df.set_index('date')
         tmp_df[bot] = tmp_df[bot] - center_score
         df = df.merge(tmp_df, left_index=True, right_index=True, how='outer')
+    df = df.sort_index(ascending=True)
+    last_index = df.index[-1]
+    end_date = dt.strptime(end_date, '%Y-%m-%d')
+    if last_index < end_date:
+        delta = end_date - last_index
+        new_date_lst = []
+        for i in range(1, delta.days + 1):
+            day = last_index + timedelta(days=i)
+            new_date_lst.append(day)
+        df_columns = df.columns
+        tmp_df = pd.DataFrame(None, index=new_date_lst, columns=df_columns)
+        tmp_df.index.name = 'date'
+        df = pd.concat([df, tmp_df])
+    for bot_idx in range(1, 16):
+        if bot_idx in early_end_bot_idx:
+            tmp_df = df.loc[ : dt.strptime(bot_end_date['bot'+str(bot_idx)], '%Y-%m-%d')]
+        else:
+            tmp_df = df
+        for stat in ['', '_var', '_count', '_sem']:
+            tmp_df['bot%s%s' % (bot_idx, stat)] = tmp_df['bot%s%s' % (bot_idx, stat)].fillna(method='ffill')
     return df
 
-def load_data_bias(medium, basepath=""):
+def load_data_bias(medium, basepath="",
+    end_date='2019-12-01', early_end_bot_idx=[13, 14]):
     df = pd.DataFrame(None, columns=['date'])
     df = df.set_index('date')
     for bot, seed in BOT_SEED_MAP.items():
-        filename = basepath + f'{medium}_{seed}_sliced_home_tl_{bot}.csv'
-        tmp_df_usr = pd.read_csv(f'{filename}',
-                             usecols=['date', f'{medium}_mean', f'{medium}_var', f'{medium}_count'],
-#                              parse_dates=['date'],
-#                              date_parser=lambda x: pd.datetime.strptime(x, "%Y-%m-%d %H:%M:%S")
+        filename = basepath + '%s_%s_sliced_home_tl_%s.csv' % (medium, seed, bot)
+        tmp_df_usr = pd.read_csv(filename,
+                             usecols=['date', '%s_mean' % medium, '%s_var' % medium, '%s_count' % medium],
+                             parse_dates=['date'],
+                             date_parser=lambda x: pd.datetime.strptime(x, "%Y-%m-%d %H:%M:%S")
                                 )
         tmp_df_usr["date"] = pd.to_datetime(tmp_df_usr["date"])
+
         tmp_df_usr = tmp_df_usr.rename(columns={
-            f'{medium}_mean': bot,
-            f'{medium}_var': f'{bot}_var',
-            f'{medium}_count': f'{bot}_count'})
+            '%s_mean' % medium: bot,
+            '%s_var' % medium: '%s_var' % bot,
+            '%s_count' % medium: '%s_count' % bot})
         tmp_df_usr = tmp_df_usr.drop_duplicates(subset={'date'}, keep='last')
         tmp_df_usr = tmp_df_usr.set_index('date')
         
-        filename = basepath + f'{medium}_{seed}_sliced_friend_usr_tl_{bot}.csv'
-        tmp_df = pd.read_csv(f'{filename}',
-                             usecols=['date', f'{medium}_mean', f'{medium}_var', f'{medium}_count'],
-#                              parse_dates=['date'],
-#                              date_parser=lambda x: pd.datetime.strptime(x, "%Y-%m-%d %H:%M:%S")
+        filename = basepath + '%s_%s_sliced_friend_usr_tl_%s.csv' % (medium,seed,bot )
+        tmp_df = pd.read_csv(filename,
+                             usecols=['date', '%s_mean' % medium, '%s_var' % medium, '%s_count' % medium],
+                             parse_dates=['date'],
+                             date_parser=lambda x: pd.datetime.strptime(x, "%Y-%m-%d %H:%M:%S")
                             )
         tmp_df["date"] = pd.to_datetime(tmp_df["date"])
         tmp_df = tmp_df.rename(columns={
-            f'{medium}_mean': bot,
-            f'{medium}_var': f'{bot}_var',
-            f'{medium}_count': f'{bot}_count'})
+            '%s_mean' % medium: bot,
+            '%s_var' % medium: '%s_var' % bot,
+            '%s_count' % medium: '%s_count' % bot})
         tmp_df = tmp_df.drop_duplicates(subset={'date'}, keep='last')
         tmp_df = tmp_df.set_index('date')
-        #tmp_df[bot] = tmp_df[bot] - tmp_df_usr[bot]
         tmp_df[bot] = tmp_df_usr[bot] - tmp_df[bot]
         # computes var and sem
         
-        tmp_df[f'{bot}_var'] = (tmp_df[f'{bot}_var'] * (tmp_df[f'{bot}_count'] - 1) + 
-                                tmp_df_usr[f'{bot}_var'] * (tmp_df_usr[f'{bot}_count'] - 1))/(tmp_df[f'{bot}_count'] + tmp_df_usr[f'{bot}_count'] - 2.)
-        tmp_df[f'{bot}_sem'] = tmp_df[f'{bot}_var'] * ((1.0/tmp_df_usr[f'{bot}_count']) + (1.0/tmp_df[f'{bot}_count']))
-        tmp_df[f'{bot}_sem'] = np.sqrt(tmp_df[f'{bot}_sem'])
-        tmp_df = tmp_df[[bot, f'{bot}_sem', f'{bot}_var']]
-        tmp_df[f'{bot}_count'] = tmp_df_usr[f'{bot}_count']
+        tmp_df['%s_var' % bot] = (tmp_df['%s_var' % bot] * (tmp_df['%s_count' % bot] - 1) + 
+                                tmp_df_usr['%s_var' % bot] * (tmp_df_usr['%s_count' % bot] - 1))/(tmp_df['%s_count' % bot] + tmp_df_usr['%s_count' % bot] - 2.)
+        tmp_df['%s_sem' % bot] = tmp_df['%s_var' % bot] * ((1.0/tmp_df_usr['%s_count' % bot]) + (1.0/tmp_df['%s_count' % bot]))
+        tmp_df['%s_sem' % bot] = np.sqrt(tmp_df['%s_sem' % bot])
+        tmp_df = tmp_df[[bot, '%s_sem' % bot, '%s_var' % bot]]
+        tmp_df['%s_count' % bot] = tmp_df_usr['%s_count' % bot]
         df = df.merge(tmp_df, left_index=True, right_index=True, how='outer')
+    df = df.sort_index(ascending=True)
+    last_index = df.index[-1]
+    end_date = dt.strptime(end_date, '%Y-%m-%d')
+    if last_index < end_date:
+        delta = end_date - last_index
+        new_date_lst = []
+        for i in range(1, delta.days + 1):
+            day = last_index + timedelta(days=i)
+            new_date_lst.append(day)
+        df_columns = df.columns
+        tmp_df = pd.DataFrame(None, index=new_date_lst, columns=df_columns)
+        tmp_df.index.name = 'date'
+        df = pd.concat([df, tmp_df])
+    for bot_idx in range(1, 16):
+        if bot_idx in early_end_bot_idx:
+            tmp_df = df.loc[ : dt.strptime(bot_end_date['bot'+str(bot_idx)], '%Y-%m-%d')]
+        else:
+            tmp_df = df
+        for stat in ['', '_var', '_count', '_sem']:
+            tmp_df['bot%s%s' % (bot_idx, stat)] = tmp_df['bot%s%s' % (bot_idx, stat)].fillna(method='ffill')
     return df
 
 def compute_sum_plot(df, sel_cols):
@@ -328,7 +372,8 @@ def compute_sum_plot(df, sel_cols):
         tmp_df[s+'_count'] = tmp_df[s+'_count'].fillna(method='ffill')
     
     for s in sel_cols:
-        idx = np.searchsorted(tmp_df.index, last_valid_index_for_cols[s])
+        idx = np.searchsorted(
+            tmp_df.index, last_valid_index_for_cols[s].to_datetime64())
         next_idx = tmp_df.index[min(idx+1, len(tmp_df)-1)]
         tmp_df.loc[next_idx:, s] = np.nan
         tmp_df.loc[next_idx:, s+'_var'] = np.nan
@@ -467,7 +512,7 @@ def plot_vertical_scores(df,xlabel,filename,xlim=[-1,1],summary_xlim=[-0.5, 0.5]
                 mask = np.isfinite(mean_val)
                 mean_val = mean_val[mask]
                 tmp_date  = y_values[mask]
-                sems = df[f'{col}_sem'][mask]
+                sems = df['{}_sem'.format(col)][mask]
 
                 handles.append(ax.plot(mean_val, tmp_date,ls="-",lw=2.5,color=ACCOUNT_COLORS.get(col),label=col)[0])
                 labels.append(col)

@@ -6,8 +6,10 @@ import pandas as pd
 import requests
 import tldextract
 
-def _LoadMediaSource(file='../data/top500_domain_score_revised.csv'):
-  source_df = pd.read_csv(file, usecols=['domain','avg_align'])
+def _LoadMediaSource(file='../data/url_bias_score.csv'):
+  source_df = pd.read_csv(file,
+                          usecols=['domain','score'])
+  score_df.rename(columns={"score": "avg_align"}, inplace=True)
   return source_df
 
 
@@ -23,6 +25,8 @@ def UrlScoreForATweet(source_df, domains, urls):
   for url in urls:
     ex_url = url.lower()
     if ex_url in ex_urls:
+      continue
+    if 'twitter.com' in ex_url:
       continue
     dd = [domain for domain in domains if domain in ex_url]
     if dd:
