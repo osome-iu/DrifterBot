@@ -244,7 +244,7 @@ def plotTwoBarsPlot(bars1, yer1, colors, xticks, bars2=None, yer2=None, figname=
     
 
 def load_data(medium, loc, center_score=-0.0635, basepath="",
-    end_date='2019-12-01', early_end_bot_idx=[13, 14]):
+    end_date='2019-12-02', early_end_bot_idx=[13, 14]):
     """ Method used to load CSV files and combine them into a single dataframe to plot timeline drifts.
     """
     df = pd.DataFrame(None, columns=['date'])
@@ -289,7 +289,7 @@ def load_data(medium, loc, center_score=-0.0635, basepath="",
     return df
 
 def load_data_bias(medium, basepath="",
-    end_date='2019-12-01', early_end_bot_idx=[13, 14]):
+    end_date='2019-12-02', early_end_bot_idx=[13, 14]):
     df = pd.DataFrame(None, columns=['date'])
     df = df.set_index('date')
     for bot, seed in BOT_SEED_MAP.items():
