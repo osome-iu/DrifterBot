@@ -31,18 +31,18 @@ HASHTAG_USER_TL_SLIDING_WIN_FOR_EACH_BOT = """
 SELECT
        distinct tw_score.day, 
        AVG(tw_score.hashtag_score)
-         over (order by tw_score.day ROWS BETWEEN 20 PRECEDING AND CURRENT ROW) AS hashtag_mean,
+         over (order by tw_score.day ROWS BETWEEN 19 PRECEDING AND CURRENT ROW) AS hashtag_mean,
        VARIANCE(tw_score.hashtag_score)
-         over (order by tw_score.day ROWS BETWEEN 20 PRECEDING AND CURRENT ROW) AS hashtag_var,
+         over (order by tw_score.day ROWS BETWEEN 19 PRECEDING AND CURRENT ROW) AS hashtag_var,
        count(*)
-         over (order by tw_score.day ROWS BETWEEN 20 PRECEDING AND CURRENT ROW) AS tw_count
+         over (order by tw_score.day ROWS BETWEEN 19 PRECEDING AND CURRENT ROW) AS tw_count
    FROM
    (
        SELECT
            DISTINCT usr_timeline.tweet_id,
            bot.screen_name,
            usr_timeline.hashtag_score,
-           date_trunc('day', usr_timeline.created_at) AS day
+           date_trunc('day', usr_timeline.created_at) AS day -- date
        FROM
            tweet usr_timeline, bot
        WHERE
@@ -59,11 +59,11 @@ URL_USER_TL_SLIDING_WIN_FOR_EACH_BOT = """
 SELECT
        distinct tw_score.day, 
        AVG(tw_score.url_score)
-         over (order by tw_score.day ROWS BETWEEN 20 PRECEDING AND CURRENT ROW) AS url_mean,
+         over (order by tw_score.day ROWS BETWEEN 19 PRECEDING AND CURRENT ROW) AS url_mean,
        VARIANCE(tw_score.url_score)
-         over (order by tw_score.day ROWS BETWEEN 20 PRECEDING AND CURRENT ROW) AS url_var,
+         over (order by tw_score.day ROWS BETWEEN 19 PRECEDING AND CURRENT ROW) AS url_var,
        count(*)
-         over (order by tw_score.day ROWS BETWEEN 20 PRECEDING AND CURRENT ROW) AS tw_count
+         over (order by tw_score.day ROWS BETWEEN 19 PRECEDING AND CURRENT ROW) AS tw_count
    FROM
    (
        SELECT
@@ -87,11 +87,11 @@ HASHTAG_HOME_TL_SLIDING_WIN_FOR_EACH_BOT = """
 SELECT
        distinct tw_score.day, 
        AVG(tw_score.hashtag_score)
-         over (order by tw_score.day ROWS BETWEEN 50 PRECEDING AND CURRENT ROW) AS hashtag_mean,
+         over (order by tw_score.day ROWS BETWEEN 49 PRECEDING AND CURRENT ROW) AS hashtag_mean,
        VARIANCE(tw_score.hashtag_score)
-         over (order by tw_score.day ROWS BETWEEN 50 PRECEDING AND CURRENT ROW) AS hashtag_var,
+         over (order by tw_score.day ROWS BETWEEN 49 PRECEDING AND CURRENT ROW) AS hashtag_var,
        count(*)
-         over (order by tw_score.day ROWS BETWEEN 50 PRECEDING AND CURRENT ROW) AS tw_count
+         over (order by tw_score.day ROWS BETWEEN 49 PRECEDING AND CURRENT ROW) AS tw_count
    FROM
    (
        SELECT
@@ -115,11 +115,11 @@ URL_HOME_TL_SLIDING_WIN_FOR_EACH_BOT = """
 SELECT
        distinct tw_score.day, 
        AVG(tw_score.url_score)
-         over (order by tw_score.day ROWS BETWEEN 50 PRECEDING AND CURRENT ROW) AS url_mean,
+         over (order by tw_score.day ROWS BETWEEN 49 PRECEDING AND CURRENT ROW) AS url_mean,
        VARIANCE(tw_score.url_score)
-         over (order by tw_score.day ROWS BETWEEN 50 PRECEDING AND CURRENT ROW) AS url_var,
+         over (order by tw_score.day ROWS BETWEEN 49 PRECEDING AND CURRENT ROW) AS url_var,
        count(*)
-         over (order by tw_score.day ROWS BETWEEN 50 PRECEDING AND CURRENT ROW) AS tw_count
+         over (order by tw_score.day ROWS BETWEEN 49 PRECEDING AND CURRENT ROW) AS tw_count
    FROM
    (
        SELECT
@@ -143,11 +143,11 @@ URL_FRIEND_USR_TIMELINE = """
 SELECT
        distinct friend_tw_scores.day, 
        AVG(friend_tw_scores.url_score)
-         over (order by friend_tw_scores.day ROWS BETWEEN 500 PRECEDING AND CURRENT ROW) AS url_mean,
+         over (order by friend_tw_scores.day ROWS BETWEEN 499 PRECEDING AND CURRENT ROW) AS url_mean,
        VARIANCE(friend_tw_scores.url_score)
-         over (order by friend_tw_scores.day ROWS BETWEEN 500 PRECEDING AND CURRENT ROW) AS url_var,
+         over (order by friend_tw_scores.day ROWS BETWEEN 499 PRECEDING AND CURRENT ROW) AS url_var,
        count(friend_tw_scores.url_score) 
-         over (order by friend_tw_scores.day ROWS BETWEEN 500 PRECEDING AND CURRENT ROW) AS url_tw_count
+         over (order by friend_tw_scores.day ROWS BETWEEN 499 PRECEDING AND CURRENT ROW) AS url_tw_count
    FROM (
        SELECT
            DISTINCT usr_timeline.tweet_id,
@@ -176,11 +176,11 @@ HASHTAG_FRIEND_USR_TIMELINE = """
 SELECT
        distinct friend_tw_scores.day, 
        AVG(friend_tw_scores.hashtag_score)
-         over (order by friend_tw_scores.day ROWS BETWEEN 500 PRECEDING AND CURRENT ROW) AS hashtag_mean,
+         over (order by friend_tw_scores.day ROWS BETWEEN 499 PRECEDING AND CURRENT ROW) AS hashtag_mean,
        VARIANCE(friend_tw_scores.hashtag_score)
-         over (order by friend_tw_scores.day ROWS BETWEEN 500 PRECEDING AND CURRENT ROW) AS hashtag_var,
+         over (order by friend_tw_scores.day ROWS BETWEEN 499 PRECEDING AND CURRENT ROW) AS hashtag_var,
        count(friend_tw_scores.hashtag_score) 
-         over (order by friend_tw_scores.day ROWS BETWEEN 500 PRECEDING AND CURRENT ROW) AS hashtag_tw_count
+         over (order by friend_tw_scores.day ROWS BETWEEN 499 PRECEDING AND CURRENT ROW) AS hashtag_tw_count
    FROM (
        SELECT
            DISTINCT usr_timeline.tweet_id,
@@ -249,7 +249,7 @@ def GetTimeSerisMetricForOneSeed(seeds, feature, comm, column_names, filename_pr
       db_conn, comm.format(seed), need_commit=False,
       return_id=False)
     result_df = pd.DataFrame(np.array(result), columns=column_names)
-    result_df = result_df.drop_duplicates(subset={'date'}, keep='last')
+    result_df = result_df.drop_duplicates(subset=['date'], keep='last')
     result_df.to_csv('data/time_series/%s_%s.csv' % (filename_prefix, bots_mask.get(seed,seed)), index=False)
     rst_bot_to_df[seed] = result_df
 
