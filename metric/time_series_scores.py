@@ -204,6 +204,69 @@ SELECT
 order by friend_tw_scores.day;
 """
 
+URL_FOLLOWER_USR_TIMELINE = """
+SELECT
+       distinct friend_tw_scores.day, 
+       AVG(friend_tw_scores.url_score)
+         over (order by friend_tw_scores.day ROWS BETWEEN 499 PRECEDING AND CURRENT ROW) AS url_mean,
+       VARIANCE(friend_tw_scores.url_score)
+         over (order by friend_tw_scores.day ROWS BETWEEN 499 PRECEDING AND CURRENT ROW) AS url_var,
+       count(friend_tw_scores.url_score) 
+         over (order by friend_tw_scores.day ROWS BETWEEN 499 PRECEDING AND CURRENT ROW) AS url_tw_count
+   FROM (
+       SELECT
+           DISTINCT usr_timeline.tweet_id,
+           conn2.t_usr_id_conn,
+           usr_timeline.url_score,
+           date_trunc('day', conn2.time) AS day
+       FROM
+           (SELECT conn.t_usr_id_conn, conn.time
+            FROM bot, connections conn
+            WHERE bot.twitter_user_id = conn.t_usr_id_ego
+                  AND conn.time < DATE '2019-12-02'           
+                  AND conn.conn_type is true
+                  AND conn.conn_tweet_update_time is not null
+                  AND bot.screen_name = '{}'
+                  AND conn.no_connctions is false) as conn2,
+           tweet as usr_timeline
+       WHERE
+           usr_timeline.user_id = conn2.t_usr_id_conn
+           AND usr_timeline.url_score is not null
+   ) AS friend_tw_scores
+order by friend_tw_scores.day;
+"""
+
+HASHTAG_FOLLOWER_USR_TIMELINE = """
+SELECT
+       distinct friend_tw_scores.day, 
+       AVG(friend_tw_scores.hashtag_score)
+         over (order by friend_tw_scores.day ROWS BETWEEN 499 PRECEDING AND CURRENT ROW) AS hashtag_mean,
+       VARIANCE(friend_tw_scores.hashtag_score)
+         over (order by friend_tw_scores.day ROWS BETWEEN 499 PRECEDING AND CURRENT ROW) AS hashtag_var,
+       count(friend_tw_scores.hashtag_score) 
+         over (order by friend_tw_scores.day ROWS BETWEEN 499 PRECEDING AND CURRENT ROW) AS hashtag_tw_count
+   FROM (
+       SELECT
+           DISTINCT usr_timeline.tweet_id,
+           conn2.t_usr_id_conn,
+           usr_timeline.hashtag_score,
+           date_trunc('day', conn2.time) AS day
+       FROM
+           (SELECT conn.t_usr_id_conn, conn.time
+            FROM bot, connections conn
+            WHERE bot.twitter_user_id = conn.t_usr_id_ego
+                  AND conn.time < DATE '2019-12-02'           
+                  AND conn.conn_type is true
+                  AND conn.conn_tweet_update_time is not null
+                  AND bot.screen_name = '{}'
+                  AND conn.no_connctions is false) as conn2,
+           tweet as usr_timeline
+       WHERE
+           usr_timeline.user_id = conn2.t_usr_id_conn
+           AND usr_timeline.hashtag_score is not null
+   ) AS friend_tw_scores
+order by friend_tw_scores.day;
+"""
 
 
 def DBExecute(
@@ -289,6 +352,14 @@ def generate_all_time_series(db_conn=None, INIT_SEED_MAP={}, bots_mask={}):
           bots_mask=bots_mask
       )
 
+      GetTimeSerisMetricForOneSeed(
+        bot_accounts, 'url', URL_FOLLOWER_USR_TIMELINE,
+        ['date', 'url_mean', 'url_var','url_count'],
+        'url_%s_sliced_follower_usr_tl' % seed,
+          db_conn=db_conn,
+          bots_mask=bots_mask
+      )
+
       # hashtag
 
       GetTimeSerisMetricForOneSeed(
@@ -311,6 +382,14 @@ def generate_all_time_series(db_conn=None, INIT_SEED_MAP={}, bots_mask={}):
         bot_accounts, 'hashtag', HASHTAG_FRIEND_USR_TIMELINE,
         ['date', 'hashtag_mean', 'hashtag_var', 'hashtag_count'],
         'hashtag_%s_sliced_friend_usr_tl' % seed,
+          db_conn=db_conn,
+          bots_mask=bots_mask
+      )
+      
+      GetTimeSerisMetricForOneSeed(
+        bot_accounts, 'hashtag', HASHTAG_FOLLOWER_USR_TIMELINE,
+        ['date', 'hashtag_mean', 'hashtag_var', 'hashtag_count'],
+        'hashtag_%s_sliced_follower_usr_tl' % seed,
           db_conn=db_conn,
           bots_mask=bots_mask
       )
