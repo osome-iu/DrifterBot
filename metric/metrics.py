@@ -95,7 +95,7 @@ def HashtagScoreForATweet(source_df, hashtags_in_df, tweet=None, hashtags=None):
   for hashtag in hashtags:
     ex_hashtag = hashtag['text'].lower()
     if ex_hashtag in hashtags_in_df:
-      ex_hashtag_scores.append(float(source_df[source_df.hashtag == ex_hashtag]['alignment']))
+      ex_hashtag_scores.append(fqloat(source_df[source_df.hashtag == ex_hashtag]['alignment']))
   if ex_hashtag_scores:
     return np.mean(ex_hashtag_scores)
   return None
