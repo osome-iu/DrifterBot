@@ -6,10 +6,6 @@ import matplotlib.pyplot as plt
 from matplotlib import dates
 import json
 from datetime import timedelta
-import math
-from scipy.stats import probplot
-
-from scipy.stats import pearsonr
 
 ### CONSTANTS
 
@@ -597,82 +593,3 @@ def compute_sum_plot_bias(df, sel_cols):
     x_axis_val = x_axis_val[mask]
     tmp_date = y_values[mask]
     return x_axis_val, None, tmp_date
-
-def compute_corr(df1, df2, df3):
-    corr_dict = {}
-    corr_lst = []
-    group_to_str = {1:'Left', 2:'Center-Left', 3:'Center', 4:'Center-Right', 5:'Right'}
-    for bot_id in range(1, 16):
-        tmp_df = pd.concat(
-            [df1['bot{}'.format(bot_id)],
-             df2['bot{}'.format(bot_id)],
-             df3['bot{}'.format(bot_id)]],
-            axis=1, join='inner')
-        tmp_df.columns = ['col1', 'col2', 'col3']
-        tmp_df = tmp_df.dropna(how='any')
-        drifter_vs_friends = pearsonr(tmp_df['col1'], tmp_df['col2'])
-        drifter_vs_followers = pearsonr(tmp_df['col1'], tmp_df['col3'])
-        friends_vs_followers = pearsonr(tmp_df['col2'], tmp_df['col3'])
-        corr_lst.append([group_to_str[int((bot_id - 1) / 3) + 1], bot_id,
-                         '{}({})'.format(round(drifter_vs_friends[0], 2),
-                                         round(drifter_vs_friends[1], 2)),
-                         '{}({})'.format(round(drifter_vs_followers[0], 2),
-                                         round(drifter_vs_followers[1], 2)),
-                         '{}({})'.format(round(friends_vs_followers[0], 2),
-                                         round(friends_vs_followers[1], 2))])
-    df = pd.DataFrame(
-        corr_lst,
-        columns=['group', 'drifter',
-                 'drifter_vs_friends(pvalue)',
-                 'drifter_vs_followers(pvalue)',
-                 'friends_vs_followers(pvalue)'])
-    df = df.set_index(['group', 'drifter'])
-    return df
-
-def qqplot(x, y, axis, **kwargs):
-    _, xr = probplot(x, fit=False)
-    _, yr = probplot(y, fit=False)
-    axis.scatter(xr, yr, **kwargs)
-
-def corr_scatterplot(
-    df1, df2, df3,
-    df1_name, df2_name, df3_name, ylabel_lst,
-    output_filename,
-    manual_xticks=[-0.6, -0.3, 0, 0.3, 0.6],
-    manual_yticks=[-0.4, 0.0, 0.4, 0.8],
-    layout_padding=0):
-    f, axes = plt.subplots(3, 5, sharey=True, sharex=True, figsize=(15,8))
-    xlabels = ['Left', 'Center-left', 'Center', 'Center-right', 'Right']
-    color_palette = {0:'#BAC964', 1: '#01A9B4', 2: '#436F8A'}
-    markers = ['4','_', '+']
-    for axes_idx in range(5):
-        for bot_idx in range(3):
-            tmp_df = pd.concat(
-                [df1['bot{}'.format(bot_idx + axes_idx * 3 + 1)],
-                 df2['bot{}'.format(bot_idx + axes_idx * 3 + 1)],
-                 df3['bot{}'.format(bot_idx + axes_idx * 3 + 1)]],
-                axis=1, join='inner')
-            tmp_df.columns = [df1_name, df2_name, df3_name]
-            tmp_df = tmp_df.dropna(how='any')
-            area = 15**2
-            for row_idx, (col1, col2) in enumerate([(df1_name, df2_name),
-                                                    (df1_name, df3_name),
-                                                    (df2_name, df3_name)]):
-                qqplot(
-                    tmp_df[col1], tmp_df[col2],
-                    axes[row_idx][axes_idx],
-                    s=area,
-                    linewidths=1.7,
-                    alpha=0.5,
-                    marker=markers[bot_idx],
-                    c=color_palette[bot_idx])
-    for idx, xlabel in enumerate(xlabels):
-        axes[2][idx].set_xlabel(xlabel)
-        plt.setp(axes[2][idx].get_xticklabels(), fontsize=16)
-    for idx, ylabel in enumerate(ylabel_lst):
-        axes[idx][0].set_ylabel(ylabel)
-        plt.setp(axes[idx][0].get_yticklabels(), fontsize=16)
-    plt.xticks(manual_xticks)
-    plt.yticks(manual_yticks)
-    plt.tight_layout(pad=layout_padding)
-    plt.savefig(output_filename)
