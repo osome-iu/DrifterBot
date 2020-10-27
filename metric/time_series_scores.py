@@ -42,7 +42,8 @@ SELECT
            DISTINCT usr_timeline.tweet_id,
            bot.screen_name,
            usr_timeline.hashtag_score,
-           date_trunc('day', usr_timeline.created_at) AS day -- date
+           date_trunc('day', usr_timeline.created_at) AS day, -- date
+           usr_timeline.created_at
        FROM
            tweet usr_timeline, bot
        WHERE
@@ -50,6 +51,7 @@ SELECT
            AND usr_timeline.created_at < DATE '2019-12-02'
            AND bot.screen_name = '{}'
            AND usr_timeline.hashtag_score is not NULL
+       ORDER BY usr_timeline.created_at
    ) AS tw_score
 order by tw_score.day;
 """
@@ -70,7 +72,8 @@ SELECT
            DISTINCT usr_timeline.tweet_id,
            bot.screen_name,
            usr_timeline.url_score,
-           date_trunc('day', usr_timeline.created_at) AS day
+           date_trunc('day', usr_timeline.created_at) AS day,
+           usr_timeline.created_at
        FROM
            tweet usr_timeline, bot
        WHERE
@@ -78,6 +81,7 @@ SELECT
            AND usr_timeline.created_at < DATE '2019-12-02'
            AND bot.screen_name = '{}'
            AND usr_timeline.url_score is not null
+       ORDER BY usr_timeline.created_at
    ) AS tw_score
 order by tw_score.day;
 """
@@ -97,7 +101,8 @@ SELECT
        SELECT
            DISTINCT tw.tweet_id,
            tw.hashtag_score,
-           date_trunc('day', checked_at) AS day
+           date_trunc('day', checked_at) AS day,
+           checked_at
        FROM
            home_timeline ht, home_timeline_tweets ht_tw, tweet tw, bot
        WHERE
@@ -107,6 +112,7 @@ SELECT
            AND ht_tw.tw_id = tw.tweet_id
            AND bot.screen_name = '{}'
            AND tw.hashtag_score is not null
+       ORDER BY checked_at
    ) AS tw_score
 ORDER BY tw_score.day;
 """
@@ -125,7 +131,8 @@ SELECT
        SELECT
            DISTINCT tw.tweet_id,
            tw.url_score,
-           date_trunc('day', checked_at) AS day
+           date_trunc('day', checked_at) AS day,
+           checked_at
        FROM
            home_timeline ht, home_timeline_tweets ht_tw, tweet tw, bot
        WHERE
@@ -135,6 +142,7 @@ SELECT
            AND ht_tw.tw_id = tw.tweet_id
            AND bot.screen_name = '{}'
            AND tw.url_score is not null
+       ORDER BY checked_at
    ) AS tw_score
 ORDER BY tw_score.day;
 """
@@ -153,7 +161,8 @@ SELECT
            DISTINCT usr_timeline.tweet_id,
            conn2.t_usr_id_conn,
            usr_timeline.url_score,
-           date_trunc('day', conn2.time) AS day
+           date_trunc('day', conn2.time) AS day,
+           usr_timeline.created_at
        FROM
            (SELECT conn.t_usr_id_conn, conn.time
             FROM bot, connections conn
@@ -167,6 +176,8 @@ SELECT
        WHERE
            usr_timeline.user_id = conn2.t_usr_id_conn
            AND usr_timeline.url_score is not null
+           AND conn2.time >= usr_timeline.created_at
+       ORDER BY usr_timeline.created_at
    ) AS friend_tw_scores
 order by friend_tw_scores.day;
 """
@@ -186,7 +197,8 @@ SELECT
            DISTINCT usr_timeline.tweet_id,
            conn2.t_usr_id_conn,
            usr_timeline.hashtag_score,
-           date_trunc('day', conn2.time) AS day
+           date_trunc('day', conn2.time) AS day,
+           usr_timeline.created_at
        FROM
            (SELECT conn.t_usr_id_conn, conn.time
             FROM bot, connections conn
@@ -200,6 +212,8 @@ SELECT
        WHERE
            usr_timeline.user_id = conn2.t_usr_id_conn
            AND usr_timeline.hashtag_score is not null
+           AND conn2.time >= usr_timeline.created_at
+       ORDER BY usr_timeline.created_at
    ) AS friend_tw_scores
 order by friend_tw_scores.day;
 """
@@ -218,7 +232,8 @@ SELECT
            DISTINCT usr_timeline.tweet_id,
            conn2.t_usr_id_conn,
            usr_timeline.url_score,
-           date_trunc('day', conn2.time) AS day
+           date_trunc('day', conn2.time) AS day,
+           usr_timeline.created_at
        FROM
            (SELECT conn.t_usr_id_conn, conn.time
             FROM bot, connections conn
@@ -232,6 +247,8 @@ SELECT
        WHERE
            usr_timeline.user_id = conn2.t_usr_id_conn
            AND usr_timeline.url_score is not null
+           AND conn2.time >= usr_timeline.created_at
+       ORDER BY usr_timeline.created_at
    ) AS friend_tw_scores
 order by friend_tw_scores.day;
 """
@@ -250,7 +267,8 @@ SELECT
            DISTINCT usr_timeline.tweet_id,
            conn2.t_usr_id_conn,
            usr_timeline.hashtag_score,
-           date_trunc('day', conn2.time) AS day
+           date_trunc('day', conn2.time) AS day,
+           usr_timeline.created_at
        FROM
            (SELECT conn.t_usr_id_conn, conn.time
             FROM bot, connections conn
@@ -264,6 +282,8 @@ SELECT
        WHERE
            usr_timeline.user_id = conn2.t_usr_id_conn
            AND usr_timeline.hashtag_score is not null
+           AND conn2.time >= usr_timeline.created_at
+       ORDER BY usr_timeline.created_at
    ) AS friend_tw_scores
 order by friend_tw_scores.day;
 """
