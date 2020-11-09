@@ -1,0 +1,65 @@
+site_name,url,twitter_handle,follower_number_with_unit,follower_number,leaning,sort
+huffpost,huffpost.com,@HuffPost,11.4M,11400000,left,1
+the new yorker,newyorker.com,@NewYorker,8.9M,8900000,left,1
+msnbc,msnbc.com,@MSNBC,3.6M,3600000,left,1
+newsweek,newsweek.com,@Newsweek,3.4M,3400000,left,1
+slate,slate.com,@Slate,1.8M,1800000,left,1
+buzzfeednews,buzzfeednews.com,@BuzzFeedNews,1.3M,1300000,left,1
+daily beast,thedailybeast.com,@thedailybeast,1.3M,1300000,left,1
+the nation,thenation.com,@thenation,1.2M,1200000,left,1
+vox,vox.com,@voxdotcom,983.6k,983600,left,1
+mother jones,motherjones.com,@MotherJones,850.7k,850700,left,1
+the intercept,theintercept.com,@theintercept,850.3k,850300,left,1
+democracy now,democracynow.org,@democracynow,772.4k,772400,left,1
+the new york times opinion,nytimes.com/opinion,@nytopinion,771.2k,771200,left,1
+jacobin,jacobinmag.com,@jacobinmag,308.8k,308800,left,1
+alternet,alternet.org,@AlterNet,138.7k,138700,left,1
+cnn opinion,cnn.com/opinions,@CNNOpinion,97.5k,97500,left,1
+cnn news,cnn.com,@CNN,50.2M,50200000,cleft,2
+new york times,nytimes.com,@nytimes,47.5M,47500000,cleft,2
+economist,economist.com,@TheEconomist,25M,25000000,cleft,2
+time,time.com,@TIME,17.4M,17400000,cleft,2
+washington post,washingtonpost.com,@washingtonpost,16.4M,16400000,cleft,2
+abc,abcnews.go.com,@ABC,15.9M,15900000,cleft,2
+the guardian,theguardian.com,@guardian,9.1M,9100000,cleft,2
+nbc,NBCNews.com,@NBCNews,7.8M,7800000,cleft,2
+cbs news,CBSNews.com,@CBSNews,7.7M,7700000,cleft,2
+bloomberg,bloomberg.com,@business,6.7M,6700000,cleft,2
+politico,politico.com,@politico,4.3M,4300000,cleft,2
+the atlantic,theatlantic.com,@TheAtlantic,2M,2000000,cleft,2
+yahoo news,yahoo.com/news,@YahooNews,1.1M,1100000,cleft,2
+propublica,propublica.org,@propublica,896.2k,896200,cleft,2
+ap politics,apne.ws/APPolitics,@AP_Politics,383.5k,383500,cleft,2
+bbc news,bbc.com/news,@BBCWorld,29.3M,29300000,center,3
+reuters,reuters.com,@Reuters,22.4M,22400000,center,3
+ap,apnews.com,@AP,14.4M,14400000,center,3
+npr news,npr.org,@NPR,8.4M,8400000,center,3
+usa today,usatoday.com,@USATODAY,4.1M,4100000,center,3
+the hill,thehill.com,@thehill,3.9M,3900000,center,3
+axios,axios.com,@axios,494.4k,494400,center,3
+real clear politics,realclearpolitics.com,@RealClearNews,183.4k,183400,center,3
+csmonitor,csmonitor.com,@csmonitor,79.1k,79100,center,3
+fox news,foxnews.com,@FoxNews,19.8M,19800000,cright,4
+the wall street journal,wsj.com,@WSJ,18.1M,18100000,cright,4
+market watch,marketwatch.com,@MarketWatch,3.8M,3800000,cright,4
+new york post,nypost.com,@nypost,1.9M,1900000,cright,4
+the washington times,washingtontimes.com,@WashTimes,406.4k,406400,cright,4
+the epoch times,theepochtimes.com,@EpochTimes,319k,319000,cright,4
+washington examiner,washingtonexaminer.com,@dcexaminer,272.9k,272900,cright,4
+reason,reason.com,@reason,260.2k,260200,cright,4
+news max,newsmax.com,@newsmax,223.1k,223100,cright,4
+the american conservative,theamericanconservative.com,@amconmag,53k,53000,cright,4
+the post millennial,ThePostMillennial.com,@TPostMillennial,50.4k,50400,cright,4
+the dispatch,thedispatch.com,@thedispatch,24.1k,24100,cright,4
+breitbart news,breitbart.com,@BreitbartNews,1.5M,1500000,right,5
+one america news,oann.com,@OANN,1.1M,1100000,right,5
+daily caller,dailycaller.com,@DailyCaller,775.2k,775200,right,5
+the blaze,theblaze.com,@theblaze,762.2k,762200,right,5
+the daily wire,dailywire.com,@realDailyWire,493.9k,493900,right,5
+national review,NationalReview.com,@NRO,350.5k,350500,right,5
+daily mail us,dailymail.com,@DailyMail,309.4k,309400,right,5
+the federalist,thefederalist.com,@FDRLST,277k,277000,right,5
+fox news opinion,foxnews.com/opinion,@FoxNewsOpinion,155.8k,155800,right,5
+cbn news,cbnnews.com,@CBNNews,148.9k,148900,right,5
+the american spectator,spectator.org,@amspectator,46.2k,46200,right,5
+ny post opinion,nypost.com/opinion,@NYPostOpinion,18.5k,18500,right,5
