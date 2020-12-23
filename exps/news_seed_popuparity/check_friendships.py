@@ -69,7 +69,7 @@ def check_friendship():
   tweepy_api = _initTweepy()
   comm_users = """
     select user_id from SAMPLED_T_ACCOUNTS2 where url_valence is not null
-     and user_id not in (select twitter_user_id from CONN_REB2)
+     and user_id not in (select twitter_user_id from CONN_REB22)
      OFFSET floor(random()*26304)
   """
   comms_sources = """
