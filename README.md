@@ -23,12 +23,18 @@ Social media platforms attempting to curb abuse and misinformation have been acc
 
 ## Dependencies
 
-1. python 3
-2. [twurl](https://github.com/twitter/twurl), modified as shown [here](https://github.com/twitter/twurl/issues/10), is used to manage the drifters. First you need to create a Twitter app. Each drifter account must authorize the app. The keys of the app can then be used with  `twurl` to control the drifters. 
-3. [chatterbot](https://chatterbot.readthedocs.io/en/stable/) is used when drifters reply to tweets that mention them.
-4. [tweepy](https://www.tweepy.org/) is used in analysis code.
-5. [psycopg2](https://pypi.org/project/psycopg2/) is the database driver.
-6. [botometer client library](https://github.com/IUNetSci/botometer-python) is used in conjunction with the [Botometer Pro API](https://botometer.iuni.iu.edu/#!/api) to get data from the Twitter API and then calculate bot scores for friends and followers of the drifters.
+The software in this repository has been tested on a linux machine with Python 3 installed.
+Installing Python and the dependencies below might require up to one hour.
+Data collection for an experiment similar to the one described in the paper would require several months.
+Data processing would typically take a few days.
+
+1. Python 3
+2. [Jupyter notebook](https://jupyter.org/) is used in some cases to process and visulize the data.
+3. [twurl](https://github.com/twitter/twurl), modified as shown [here](https://github.com/twitter/twurl/issues/10), is used to manage the drifters. First you need to create a Twitter app. Each drifter account must authorize the app. The keys of the app can then be used with  `twurl` to control the drifters. 
+4. [chatterbot](https://chatterbot.readthedocs.io/en/stable/) is used when drifters reply to tweets that mention them.
+5. [tweepy](https://www.tweepy.org/) is used in analysis code.
+6. [psycopg2](https://pypi.org/project/psycopg2/) is the database driver.
+7. [botometer client library](https://github.com/IUNetSci/botometer-python) is used in conjunction with the [Botometer Pro API](https://botometer.iuni.iu.edu/#!/api) to get data from the Twitter API and then calculate bot scores for friends and followers of the drifters.
 
 ## Citation
 
