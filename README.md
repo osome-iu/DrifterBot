@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4750191.svg)](https://doi.org/10.5281/zenodo.4750191)
+
 # Introduction
 
 This repo contains the source code and data for the paper *Neutral Bots Probe Political Bias on Social Media* by Chen et al. ([preprint](https://arxiv.org/abs/2005.08141)).
