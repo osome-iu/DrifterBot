@@ -1,6 +1,6 @@
 # Introduction
 
-This repo contains the source code and data for the paper *Neutral Bots Reveal Political Bias on Social Media* by Chen et al. ([preprint](https://arxiv.org/abs/2005.08141)).
+This repo contains the source code and data for the paper *Neutral Bots Probe Political Bias on Social Media* by Chen et al. ([preprint](https://arxiv.org/abs/2005.08141)).
 
 Social media platforms attempting to curb abuse and misinformation have been accused of political bias. We deploy neutral social bots (we call them *drifters*) on Twitter to probe biases that may emerge from interactions between users, platform mechanisms, and manipulation by inauthentic actors. 
 
@@ -38,7 +38,7 @@ Data processing would typically take a few days.
 
 ## Citation
 
-Please cite our paper as:
+You may cite our preprint as:
 
 ```
 @techreport{drifter2020,
