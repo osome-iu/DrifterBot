@@ -185,7 +185,7 @@ def calculate_window_scores(accountanalysis,metric,window_size=7, min_periods=3)
 
 def plotTwoBarsPlot(bars1, yer1, colors, xticks, bars2=None, yer2=None, figname="plotTwoBarsPlot.pdf", ylabel="Bot score",
                     barWidth = 0.3, label1 = 'Friends', label2 = 'Followers', legend_loc=(.6,.8), ax=None,
-                   xlabel_size=16,ylabel_size=16,ylim=0, saveFig=True):
+                   xlabel_size=16,ylabel_size=16,ylim=0, saveFig=True, scatter1=None, scatter2=None, **kwargs):
     from matplotlib.patches import Patch
 
     # The x position of bars
@@ -197,17 +197,29 @@ def plotTwoBarsPlot(bars1, yer1, colors, xticks, bars2=None, yer2=None, figname=
 
     ax.bar(r1, bars1, width = barWidth, color = colors, 
             edgecolor = '#ffffff', 
-            yerr=yer1, capsize=7, label=label1, hatch="/")
+            yerr=yer1, capsize=7, label=label1, hatch="/", **kwargs)
 
     
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
     
+    y = scatter1
+    if scatter1 is not None:
+        for i in range(len(xticks_pos)):
+            # distribute scatter randomly across whole width of bar
+            ax.scatter(
+#                 xticks_pos[i] + np.random.random(len(y[i])) * barWidth - barWidth / 2, 
+                xticks_pos[i] + [(j+1)*barWidth/(len(y[i])+1) for j in range(len(y[i]))] - barWidth / 2, 
+                y[i], 
+                zorder=10,facecolor=colors[i],edgecolor='black',alpha=0.7
+            )
+
+    
     if bars2 is not None:
         r2 = [x + barWidth for x in r1]
         ax.bar(r2, bars2, width = barWidth, color = colors, 
                      edgecolor = '#ffffff', 
-                     yerr=yer2, capsize=7, label=label2, hatch="-")
+                     yerr=yer2, capsize=7, label=label2, hatch="-", **kwargs)
         xticks_pos = (r1+r2)/2
     
         legend_elements = [
@@ -221,6 +233,17 @@ def plotTwoBarsPlot(bars1, yer1, colors, xticks, bars2=None, yer2=None, figname=
             fontsize=14,
             loc=legend_loc #"upper right"
         )
+    
+    y = scatter2
+    if scatter2 is not None:
+        for i in range(len(xticks_pos)):
+            # distribute scatter randomly across whole width of bar
+            ax.scatter(
+#                 xticks_pos[i] + np.random.random(len(y[i])) * barWidth - barWidth / 2, 
+                xticks_pos[i] + [(j+1)*barWidth/(len(y[i])+1) for j in range(len(y[i]))], 
+                y[i], 
+                zorder=10,facecolor=colors[i],edgecolor='black',alpha=0.7
+            )
 
     # general layout
 #     plt.xticks(
@@ -411,7 +434,7 @@ def plot_vertical_scores_summary(
     home_tl_xlim=1, friends_xlim=1, bias_xlim=1,
     home_tl_xlim2=1, friends_xlim2=1, bias_xlim2=1,
     filename="to_delete.pdf",
-    label_letters=["A","B","C","D","E","F"]
+    label_letters=["a","b","c","d","e","f"]
 ):
     fig, axs = plt.subplots(2,3,figsize=figsize,sharey=True,sharex=False)
     axs = axs.flatten()
