@@ -16,7 +16,7 @@ To run the [GenerateDataFiles.ipynb notebook](GenerateDataFiles.ipynb) you need 
 
 + ### Bot scores
 
-In this project, we gathered data from [Botometer](https://botometer.iuni.iu.edu/) using the API. The input file for our analysis is [connections_botscores.csv](connections_botscores.csv). The base code to generate this file can be found in the [retrieving_botscore.ipynb](retrieving_botscore.ipynb) notebook.
+In this project, we gathered data from [Botometer](https://botometer.iuni.iu.edu/) using the API. The input file for our analysis is [connections_seeds_unique_botscores.csv](connections_seeds_unique_botscores.csv). The base code to generate this file can be found in the [retrieving_botscore.ipynb](retrieving_botscore.ipynb) notebook.
 
 + ### Ego Networks
 
