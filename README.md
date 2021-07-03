@@ -37,6 +37,7 @@ Data processing would typically take a few days.
 5. [tweepy](https://www.tweepy.org/) is used in analysis code.
 6. [psycopg2](https://pypi.org/project/psycopg2/) is the database driver.
 7. [botometer client library](https://github.com/IUNetSci/botometer-python) is used in conjunction with the [Botometer Pro API](https://botometer.iuni.iu.edu/#!/api) to get data from the Twitter API and then calculate bot scores for friends and followers of the drifters.
+8. [gensim](https://pypi.org/project/gensim/3.5.0/) provides an implementation of the word2vec algorithm for calculating the political alignment of the hashtags.
 
 ## Citation
 
